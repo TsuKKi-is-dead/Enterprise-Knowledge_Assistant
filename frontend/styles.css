@@ -1,0 +1,38 @@
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.chat-bubble {
+    max-width: 75%;
+    padding: 16px 20px;
+    border-radius: 20px;
+    line-height: 1.5;
+}
+
+.user-bubble {
+    background-color: #2563eb;
+    color: white;
+    border-bottom-right-radius: 4px;
+}
+
+.ai-bubble {
+    background-color: #1f2937;
+    border-bottom-left-radius: 4px;
+}
+
+.source-tag {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    margin-top: 8px;
+}
+
+.recent-item {
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.recent-item:hover {
+    background-color: #374151;
+}

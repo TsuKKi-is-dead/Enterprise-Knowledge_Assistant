@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KnowBase - Enterprise Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body class="bg-gray-950 text-gray-100">
+    <!-- Login Modal -->
+    <div
+      id="login-modal"
+      class="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+    >
+      <div class="bg-gray-900 p-8 rounded-3xl w-full max-w-md">
+        <h2 class="text-2xl font-bold mb-6 text-center">Login to KnowBase</h2>
+        <input
+          id="login-email"
+          type="email"
+          placeholder="hr@company.com"
+          class="w-full bg-gray-800 border border-gray-700 rounded-2xl px-4 py-3 mb-4 focus:outline-none focus:border-blue-500"
+        />
+        <input
+          id="login-password"
+          type="password"
+          placeholder="hr123"
+          class="w-full bg-gray-800 border border-gray-700 rounded-2xl px-4 py-3 mb-6 focus:outline-none focus:border-blue-500"
+        />
+        <button
+          onclick="login()"
+          class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-2xl font-medium"
+        >
+          Login
+        </button>
+        <p class="text-center text-xs text-gray-500 mt-4">
+          Demo: hr@company.com / hr123
+        </p>
+      </div>
+    </div>
+
+    <div class="flex h-screen">
+      <!-- Sidebar -->
+      <div class="w-80 bg-gray-900 border-r border-gray-800 flex flex-col">
+        <div class="p-6 border-b border-gray-800">
+          <h1 class="text-2xl font-bold flex items-center gap-2">
+            <i class="fas fa-building"></i> KnowBase
+          </h1>
+          <p class="text-gray-400 text-sm">Enterprise Knowledge Platform</p>
+        </div>
+
+        <!-- New Chat -->
+        <div class="p-4">
+          <button
+            onclick="newChat()"
+            class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-2xl flex items-center justify-center gap-2 font-medium"
+          >
+            <i class="fas fa-plus"></i> New Chat
+          </button>
+        </div>
+
+        <!-- Upload -->
+        <div class="p-6">
+          <label
+            onclick="triggerFileUpload()"
+            class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-2xl flex items-center justify-center gap-2 font-medium cursor-pointer"
+          >
+            <i class="fas fa-upload"></i> Upload New Document (PDF)
+          </label>
+          <input
+            type="file"
+            id="file-upload"
+            accept=".pdf"
+            class="hidden"
+            onchange="uploadFile(event)"
+          />
+        </div>
+
+        <!-- Uploaded Documents -->
+        <div class="px-6">
+          <h3
+            class="uppercase text-xs tracking-widest text-gray-500 mb-3 flex items-center justify-between"
+          >
+            <span>Uploaded Documents</span>
+            <span id="doc-count" class="text-emerald-400 text-xs"></span>
+          </h3>
+          <div
+            id="uploaded-docs"
+            class="space-y-1 max-h-64 overflow-y-auto"
+          ></div>
+        </div>
+
+        <!-- Chat History -->
+        <div class="px-6 mt-6">
+          <h3 class="uppercase text-xs tracking-widest text-gray-500 mb-3">
+            Chat History
+          </h3>
+          <div
+            id="chat-history"
+            class="space-y-1 max-h-64 overflow-y-auto"
+          ></div>
+        </div>
+
+        <!-- Recent Searches -->
+        <div class="px-6 mt-6">
+          <h3 class="uppercase text-xs tracking-widest text-gray-500 mb-3">
+            Recent Searches
+          </h3>
+          <div id="recent-searches" class="space-y-1"></div>
+        </div>
+
+        <div class="mt-auto p-6 border-t border-gray-800">
+          <div id="user-info" class="text-sm mb-4"></div>
+          <button
+            onclick="logout()"
+            class="w-full py-2 text-red-400 hover:text-red-500 flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Area -->
+      <div class="flex-1 flex flex-col">
+        <header
+          class="bg-gray-900 border-b border-gray-800 px-8 py-5 flex justify-between items-center"
+        >
+          <div class="flex items-center gap-4">
+            <h2 id="chat-title" class="text-xl font-semibold">
+              New Conversation
+            </h2>
+          </div>
+          <button
+            onclick="showAnalytics()"
+            class="px-6 py-2 bg-gray-800 hover:bg-gray-700 rounded-2xl flex items-center gap-2"
+          >
+            <i class="fas fa-chart-bar"></i> Analytics
+          </button>
+        </header>
+
+        <div
+          id="chat-container"
+          class="flex-1 overflow-y-auto p-8 space-y-6"
+        ></div>
+
+        <!-- Query Suggestions -->
+        <div
+          id="suggestions"
+          class="px-8 py-3 border-t border-gray-800 bg-gray-900 hidden"
+        >
+          <p class="text-xs text-gray-400 mb-2">Suggested Questions:</p>
+          <div id="suggestion-buttons" class="flex flex-wrap gap-2"></div>
+        </div>
+
+        <div class="p-6 border-t border-gray-800 bg-gray-900">
+          <div class="relative">
+            <input
+              id="query-input"
+              type="text"
+              placeholder="Ask anything about company knowledge..."
+              class="w-full bg-gray-800 border border-gray-700 rounded-3xl py-4 px-6 pr-20 focus:outline-none focus:border-blue-500"
+            />
+            <button
+              onclick="sendQuery()"
+              class="absolute right-4 top-1/2 -translate-y-1/2 bg-blue-600 hover:bg-blue-700 w-11 h-11 rounded-2xl"
+            >
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Modal -->
+    <div
+      id="analytics-modal"
+      class="hidden fixed inset-0 bg-black/80 flex items-center justify-center z-50"
+    >
+      <div
+        class="bg-gray-900 rounded-3xl w-full max-w-2xl mx-4 overflow-hidden"
+      >
+        <div class="p-8">
+          <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+            <i class="fas fa-chart-bar"></i> Knowledge Analytics
+          </h2>
+          <div id="analytics-content"></div>
+        </div>
+        <div class="border-t border-gray-800 p-4 text-center">
+          <button
+            onclick="hideAnalytics()"
+            class="text-gray-400 hover:text-white px-6 py-2"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+  </body>
+</html>

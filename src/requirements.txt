@@ -1,0 +1,12 @@
+fastapi==0.115.12
+uvicorn==0.34.2
+python-jose[cryptography]==3.4.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.20
+chromadb==0.6.3
+sentence-transformers==4.0.2
+rank-bm25==0.2.2
+pypdf==5.5.0
+python-dotenv==1.1.0
+openai==1.78.0
+langchain-text-splitters==0.3.0
